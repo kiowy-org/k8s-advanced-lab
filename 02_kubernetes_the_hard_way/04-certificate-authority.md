@@ -156,8 +156,6 @@ worker-0-key.pem
 worker-0.pem
 worker-1-key.pem
 worker-1.pem
-worker-2-key.pem
-worker-2.pem
 ```
 
 ### The Controller Manager Client Certificate
