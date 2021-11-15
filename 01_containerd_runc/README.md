@@ -35,7 +35,7 @@ Nous allons créer un conteneur basiquement, à l'aide de runC. Pour démarrer l
 
 Un archive tar de l'image busybox est fournie dans ce TP, vous devez copier l'archive sur la machine concernée via scp :
 ```bash
-scp -i id_forma ./busyboximg.tar etudiant@tp1.etu<NUMERO ETUDIANT>.forma.kiowy.net:~
+scp -i id_forma ./busyboximg.tar etudiant@runc-<prenom>.forma.kiowy.net:~
 ```
 
 Sur la machine distante, préparez les dossier pour construire notre conteneur.
