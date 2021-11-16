@@ -94,7 +94,7 @@ Une fois terminé, nous pouvons récupérer l'accès administrateur au cluster, 
 
 ```shell
 mkdir -p $HOME/.kube
-sudo cp -I /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo cp /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
