@@ -294,7 +294,7 @@ List the registered Kubernetes nodes:
 
 ```
 ssh -i id_forma etudiant@controller-0-prenom.forma.kiowy.net \
-  --command "kubectl get nodes --kubeconfig admin.kubeconfig"
+ "kubectl get nodes --kubeconfig admin.kubeconfig"
 ```
 
 > output
