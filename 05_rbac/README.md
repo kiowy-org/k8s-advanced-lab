@@ -13,7 +13,7 @@ kubectl create ns bar
 
 ```shell
 kubectl create deployment test --image=luksa/kubectl-proxy -n foo
-kubectl run deployment --image=luksa/kubectl-proxy -n bar
+kubectl create deployment --image=luksa/kubectl-proxy -n bar
 ```
 
 Ouvrez deux terminaux, vous allez vous connecter à vos deux pods dans chacun d'eux.
