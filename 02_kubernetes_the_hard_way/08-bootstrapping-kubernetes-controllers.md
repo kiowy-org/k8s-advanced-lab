@@ -59,11 +59,6 @@ INTERNAL_IP=$(curl -s -H "Metadata-Flavor: Google" \
 ```
 
 ```
-REGION=$(curl -s -H "Metadata-Flavor: Google" \
-  http://metadata.google.internal/computeMetadata/v1/project/attributes/google-compute-default-region)
-```
-
-```
 KUBERNETES_PUBLIC_ADDRESS=<IP PUBLIC API>
 ```
 
