@@ -56,7 +56,7 @@ Appliquez le rôle au cluster avec `kubectl apply`
 
 Dans le namespace `bar`, utilisez directement kubectl pour créer le rôle (n'oubliez pas de remplacer les ?) :
 ```shell
-kubectl create role service-reader --verb=? --verb=? --resources=? -n bar
+kubectl create role service-reader --verb=? --verb=? --resource=? -n bar
 ```
 
 Maintenant que vos rôles sont en place, vous devez les binder à un ServiceAccount.
