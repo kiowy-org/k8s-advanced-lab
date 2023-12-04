@@ -393,8 +393,7 @@ Copy the appropriate certificates and private keys to each worker instance:
 
 ```
 for instance in worker-0-prenom worker-1-prenom; do
-  #scp -i id_forma ca.pem ${instance}-key.pem ${instance}.pem etudiant@${instance}.forma.kiowy.net:~/
-  gcloud scp ca.pem ${instance}-key.pem ${instance}.pem ${instance}:~/
+  scp -i id_forma ca.pem ${instance}-key.pem ${instance}.pem etudiant@${instance}.forma.kiowy.net:~/
 done
 ```
 
@@ -402,10 +401,8 @@ Copy the appropriate certificates and private keys to each controller instance:
 
 ```
 for instance in controller-0-prenom controller-1-prenom controller-2-prenom; do
-  # scp -i id_forma ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem \
-  #  service-account-key.pem service-account.pem etudiant@${instance}.forma.kiowy.net:~/
-  gcloud scp ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem \
-  service-account-key.pem service-account.pem ${instance}:~/
+  scp -i id_forma ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem \
+   service-account-key.pem service-account.pem etudiant@${instance}.forma.kiowy.net:~/
 done
 ```
 
