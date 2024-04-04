@@ -54,7 +54,7 @@ Démarrez le processus de mise à jour mais... n'oubliez pas de retirer les pods
 
 ```shell
 {
-kubectl drain node <master> --ignore-daemonsets
+kubectl drain <master> --ignore-daemonsets
 sudo kubeadm upgrade apply v1.29.x
 }
 ```
