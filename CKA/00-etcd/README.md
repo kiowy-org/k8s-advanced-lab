@@ -1,7 +1,7 @@
 # Exercice ETCD
 
 > [!IMPORTANT]
-> Si vous n'avez pas etcdctl sur le cluster, complétez le prérequis: [Installer les outils ETCD sur le cluster kubeadm](requirements_etcd.md)
+> Si `etcdctl` & `etcdutl` ne sont pas présents sur le cluster, compléter le prérequis: [Installer les outils ETCD sur le cluster kubeadm](requirements_etcd.md)
 
 <details>
 <summary><b>Référence Rapide</b></summary>
