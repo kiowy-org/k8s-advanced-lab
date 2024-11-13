@@ -179,7 +179,7 @@ Dans cet exercice, vous allez manipuler des SBOM (Software Bill of Materials) en
    Utilisez `trivy` pour analyser un SBOM existant afin de détecter les vulnérabilités connues. Par exemple :
    
    ```bash
-   trivy sbom --input kube-controller-manager_sbom.cdx.json
+   trivy sbom kube-controller-manager_sbom.cdx.json
    ```
 
 Interprétez les résultats pour identifier les vulnérabilités critiques ou élevées présentes dans les composants listés.
