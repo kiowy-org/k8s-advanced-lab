@@ -1120,3 +1120,93 @@ Dans cet exercice, vous allez configurer l'Ingress `secure` dans le namespace `t
      ```bash
      curl -kv https://secure-ingress.test:31443/app
      ```
+---
+# Exercice 18
+
+<details>
+<summary><b>Référence Rapide</b></summary>
+<p>
+
+* Documentation : [AppArmor in Kubernetes](https://kubernetes.io/docs/tutorials/security/apparmor/)
+* Documentation : [Node Labels in Kubernetes](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
+
+</p>
+</details>
+
+Dans cet exercice, vous allez installer et activer un profil AppArmor sur un nœud, puis déployer une application avec ce profil, en enregistrant les logs pour analyse.
+
+## Étapes
+
+1. **Connexion au nœud et ajout du label :**
+
+   Connectez-vous au nœud `cks7262-node1` :
+
+   ```bash
+   ssh cks7262@cks7262-node1
+   ```
+
+   Ajoutez le label `security=apparmor` au nœud :
+
+   ```bash
+   kubectl label nodes cks7262-node1 security=apparmor
+   ```
+
+2. **Installation du profil AppArmor :**
+
+   Assurez-vous que le profil AppArmor est installé et activé sur le nœud. Vous pouvez utiliser une commande comme celle-ci pour vérifier ou appliquer un profil (le profil doit être spécifié par l’équipe de sécurité) :
+
+   ```bash
+   sudo apparmor_parser -r /etc/apparmor.d/path-to-profile
+   ```
+
+3. **Créer le Déploiement avec le profil AppArmor :**
+
+   Créez un fichier `apparmor-deployment.yaml` pour configurer le déploiement, en incluant l’annotation AppArmor dans le conteneur nommé `c1` :
+
+   ```yaml
+   apiVersion: apps/v1
+   kind: Deployment
+   metadata:
+     name: apparmor
+     namespace: default
+   spec:
+     replicas: 1
+     selector:
+       matchLabels:
+         app: apparmor
+     template:
+       metadata:
+         labels:
+           app: apparmor
+         annotations:
+           container.apparmor.security.beta.kubernetes.io/c1: localhost/path-to-profile
+       spec:
+         nodeSelector:
+           security: apparmor
+         containers:
+         - name: c1
+           image: nginx:1.27.1
+   ```
+
+   Appliquez cette configuration :
+
+   ```bash
+   kubectl apply -f apparmor-deployment.yaml
+   ```
+
+4. **Vérification et enregistrement des logs :**
+
+   Si le pod ne fonctionne pas correctement avec le profil AppArmor activé, accédez aux logs du pod et enregistrez-les pour l’équipe de développement sur le nœud `cks7262` :
+
+   - **Vérifiez l’état du pod :**
+
+     ```bash
+     kubectl get pods -l app=apparmor
+     ```
+
+   - **Récupérez les logs et enregistrez-les :**
+
+     ```bash
+     POD_NAME=$(kubectl get pods -l app=apparmor -o jsonpath="{.items[0].metadata.name}")
+     kubectl logs $POD_NAME > /opt/course/9/logs/apparmor-pod.log
+     ```
