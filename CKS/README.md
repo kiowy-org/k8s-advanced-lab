@@ -1,8 +1,13 @@
 # Accès à l'infra
 
 ```shell
-# Accès au bastion
+# Accès au bastion (depuis votre machine)
 ssh -i ../id_forma student@cks-<prenom>.forma.kiowy.net
+
+# Accès aux noeuds (depuis le bastion)
+ssh training-master-0-<prenom>
+ssh training-node-0-<prenom>
+ssh training-node-1-<prenom>
 ```
 
 # Exercice 1
