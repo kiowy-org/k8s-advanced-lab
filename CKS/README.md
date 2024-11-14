@@ -1,3 +1,10 @@
+# Accès à l'infra
+
+```shell
+# Accès au bastion
+ssh -i ../id_forma student@cks-<prenom>.forma.kiowy.net
+```
+
 # Exercice 1
 
 <details>
