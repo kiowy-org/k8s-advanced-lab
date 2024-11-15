@@ -526,8 +526,6 @@ Dans cet exercice, vous allez appliquer le standard de sécurité des pods de ni
 4. **Consulter les événements pertinents :**
 
    Dans la sortie, recherchez les lignes d'événements contenant la raison de l'échec de la recréation du pod, qui devrait être liée à l'application des règles de sécurité `baseline` qui interdisent l'utilisation de volumes `hostPath` non conformes.
-
-Ces étapes vous permettront de comprendre comment les politiques de sécurité des pods empêchent les configurations dangereuses et de voir comment le système gère ces restrictions en temps réel.
 ---
 
 # Exercice 10
