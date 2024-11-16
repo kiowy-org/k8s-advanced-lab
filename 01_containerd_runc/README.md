@@ -97,15 +97,7 @@ sudo mkdir -p /etc/containerd/
 ```
 
 ```shell
-cat << EOF | sudo tee /etc/containerd/config.toml
-[plugins]
-  [plugins.cri.containerd]
-    snapshotter = "overlayfs"
-    [plugins.cri.containerd.default_runtime]
-      runtime_type = "io.containerd.runtime.v1.linux"
-      runtime_engine = "/usr/local/bin/runc"
-      runtime_root = ""
-EOF
+containerd config default | sudo tee /etc/containerd/config.toml
 ```
 Enfin, il faut créer un fichier `containerd.service` afin que systemd puisse gérer notre service.
 ```shell
@@ -143,7 +135,7 @@ Enfin, nous pouvons démarrer le daemon containerd.
 ## 5. Démarrons notre conteneur busybox via crictl
 Contrairement à runC qui ne comprend que le concept de conteneur, containerd peut pull des images et les utiliser directement. Nous pouvons donc pull une image busybox :
 ```shell
-crictl pull busybox
+sudo crictl pull busybox
 ```
 
 Vous pouvez lister les images via `crictl images`.
@@ -188,13 +180,48 @@ cat << EOF | tee container-config.json
 EOF
 ```
 
-Enfin nous pouvons créer le pod, le conteneur, et démarrer le conteneur :
+Enfin nous pouvons créer le pod :
 
+```shell
+sudo crictl runp pod-config.json
+```
+Que constatez vous ?
+
+### Configurer la Container Network Interface
+
+```shell
+sudo mkdir -p /etc/cni/net.d
+cat <<EOF | sudo tee /etc/cni/net.d/10-mynet.conf 
+{
+	"cniVersion": "0.2.0",
+	"name": "mynet",
+	"type": "bridge",
+	"bridge": "cni0",
+	"isGateway": true,
+	"ipMasq": true,
+	"ipam": {
+		"type": "host-local",
+		"subnet": "10.22.0.0/16",
+		"routes": [
+			{ "dst": "0.0.0.0/0" }
+		]
+	}
+}
+EOF
+cat <<EOF | sudo tee /etc/cni/net.d/99-loopback.conf 
+{
+	"cniVersion": "0.2.0",
+	"name": "lo",
+	"type": "loopback"
+}
+EOF
+```
+Maintenant, tentons à nouveau de démarrer notre Pod :
 (N'hésitez pas à observer ce qui se passe entre chaque commandes grâce à `crictl pods` ou encore `crictl ps -a`)
 ```shell
-crictl runp pod-config.json
-crictl create <POD ID> container-config.json pod-config.json
-crictl start <CONTENEUR ID>
+sudo crictl runp pod-config.json
+sudo crictl create <POD ID> container-config.json pod-config.json
+sudo crictl start <CONTENEUR ID>
 ```
 
 Félicitations, vous savez désormais ce qui se passe pour nos conteneurs avec Kubernetes !
