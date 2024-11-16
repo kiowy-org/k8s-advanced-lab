@@ -10,16 +10,19 @@ Une fois connect√© sur votre machine (vous devez voir le prompt apparaitre), ex√
 
 ```bash
 wget -q --show-progress --https-only --timestamping \
-  https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.21.0/crictl-v1.21.0-linux-amd64.tar.gz \
-  https://github.com/opencontainers/runc/releases/download/v1.0.0-rc93/runc.amd64 \
-  https://github.com/containerd/containerd/releases/download/v1.4.4/containerd-1.4.4-linux-amd64.tar.gz
+  https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.31.1/crictl-v1.31.1-linux-amd64.tar.gz \
+  https://github.com/opencontainers/runc/releases/download/v1.2.2/runc.amd64 \
+  https://github.com/containerd/containerd/releases/download/v2.0.0/containerd-2.0.0-linux-amd64.tar.gz \
+  https://github.com/containernetworking/plugins/releases/download/v1.6.0/cni-plugins-linux-amd64-v1.6.0.tgz
 ```
 
 ```bash
 {
   mkdir containerd
+  sudo mkdir -p /opt/cni/bin
   tar -xvf crictl-v1.21.0-linux-amd64.tar.gz
   tar -xvf containerd-1.4.4-linux-amd64.tar.gz -C containerd
+  sudo tar Cxzvf /opt/cni/bin cni-plugins-linux-amd64-v1.6.0.tgz
   sudo mv runc.amd64 runc
   chmod +x crictl runc 
   sudo mv crictl runc /usr/local/bin/
