@@ -20,8 +20,8 @@ wget -q --show-progress --https-only --timestamping \
 {
   mkdir containerd
   sudo mkdir -p /opt/cni/bin
-  tar -xvf crictl-v1.21.0-linux-amd64.tar.gz
-  tar -xvf containerd-1.4.4-linux-amd64.tar.gz -C containerd
+  tar -xvf crictl-v1.31.1-linux-amd64.tar.gz
+  tar -xvf containerd-2.0.0-linux-amd64.tar.gz -C containerd
   sudo tar Cxzvf /opt/cni/bin cni-plugins-linux-amd64-v1.6.0.tgz
   sudo mv runc.amd64 runc
   chmod +x crictl runc 
