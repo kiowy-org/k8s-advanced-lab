@@ -36,12 +36,12 @@ Vérifiez l'installation en exécutant `runc` et `crictl`.
 
 Nous allons créer un conteneur basiquement, à l'aide de runC. Pour démarrer le conteneur, runC a besoin de deux informations : le rootfs (arborescence du conteneur à créer) et un fichier de configuration (expliquant la commande à exécuter au démarrage par exemple).
 
-Un archive tar de l'image busybox est fournie dans ce TP, vous devez copier l'archive sur la machine concernée via scp :
+Un archive tar de l'image busybox est fournie dans ce TP, vous devez copier l'archive sur la machine de TP :
 ```bash
-scp -i id_forma ./busyboximg.tar etudiant@runc-<prenom>.forma.kiowy.net:~
+wget -q --show-progress --https-only --timestamping https://github.com/kiowy-org/k8s-advanced-lab/raw/refs/heads/master/01_containerd_runc/busyboximg.tar
 ```
 
-Sur la machine distante, préparez les dossier pour construire notre conteneur.
+Préparez ensuite les dossier pour construire notre conteneur.
 ```bash
 {
   mkdir monconteneur
