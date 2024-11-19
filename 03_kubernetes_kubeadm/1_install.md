@@ -12,6 +12,10 @@ Nous allons déployer Kubernetes avec 1 master et 2 workers, les composants du c
 | worker-0-prenom     | worker-0-prenom.forma.kiowy.net     |
 | worker-1-prenom     | worker-1-prenom.forma.kiowy.net     |
 
+```shell
+ssh -i id_forma etudiant@controller-0-<prenom>.forma.kiowy.net
+```
+
 ## 2. Configuration réseau de iptables
 
 Nous devons tout d'abord s'assurer de la configuration de iptables (afin de voir le traffic sur les interface bridge)
