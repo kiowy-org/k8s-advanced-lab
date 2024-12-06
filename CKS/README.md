@@ -1160,17 +1160,17 @@ Dans cet exercice, vous allez installer et activer un profil AppArmor sur un nœ
 
    ```bash
    sudo apparmor_parser -q <<EOF
-#include <tunables/global>
-
-profile k8s-apparmor-example-deny-write flags=(attach_disconnected) {
-  #include <abstractions/base>
-
-  file,
-
-  # Deny all file writes.
-  deny /** w,
-}
-EOF
+   #include <tunables/global>
+    
+   profile k8s-apparmor-example-deny-write flags=(attach_disconnected) {
+     #include <abstractions/base>
+   
+     file,
+    
+     # Deny all file writes.
+     deny /** w,
+   }
+   EOF
    ```
 
 3. **Créer le Déploiement avec le profil AppArmor :**
