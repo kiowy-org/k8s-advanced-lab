@@ -912,13 +912,6 @@ Dans cet exercice, vous allez configurer deux `NetworkPolicies` pour contrôler 
      podSelector: {}
      policyTypes:
      - Egress
-     egress:
-     - to:
-       - ipBlock:
-           cidr: 192.168.100.21/32
-         ports:
-         - port: 32000
-           protocol: TCP
    ```
 
    Cette configuration bloque toutes les connexions vers `192.168.100.21:32000` pour les pods dans le namespace `metadata-access`, tout en permettant l'accès sortant vers d'autres adresses.
