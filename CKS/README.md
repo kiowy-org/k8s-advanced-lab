@@ -1181,9 +1181,11 @@ Dans cet exercice, vous allez installer et activer un profil AppArmor sur un nœ
        metadata:
          labels:
            app: apparmor
-         annotations:
-           container.apparmor.security.beta.kubernetes.io/c1: localhost/path-to-profile
        spec:
+         securityContext:
+           appArmorProfile:
+             type: Localhost
+             localhostProfile: k8s-apparmor-example-deny-write
          nodeSelector:
            security: apparmor
          containers:
