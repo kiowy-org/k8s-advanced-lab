@@ -114,13 +114,6 @@ Que constatez vous ?
 
 La liste des constantes des capabilities du noyau linux sont disponibles dans [capability.h](https://github.com/torvalds/linux/blob/master/include/uapi/linux/capability.h).
 
-
-## 3. PodSecurityPolicy, mise en place
-
-**Attention** : seules les sections **3** et **4** ont été modifiées pour parler du Pod Security Standard à la place de PodSecurityPolicy. Les sections **1** et **2** demeurent inchangées.
-
----
-
 ## 3. Pod Security Standard, mise en place
 
 ### Configuration du niveau de sécurité sur le namespace
