@@ -117,42 +117,31 @@ La liste des constantes des capabilities du noyau linux sont disponibles dans [c
 
 ## 3. PodSecurityPolicy, mise en place
 
-Commencons par mettre en place le TP, nous allons créer un compte de service, afin de simuler un utilisateur non administrateur du cluster.
+**Attention** : seules les sections **3** et **4** ont été modifiées pour parler du Pod Security Standard à la place de PodSecurityPolicy. Les sections **1** et **2** demeurent inchangées.
+
+---
+
+## 3. Pod Security Standard, mise en place
+
+### Configuration du niveau de sécurité sur le namespace
+
+Dans les dernières versions de Kubernetes, la fonctionnalité PodSecurityPolicy est dépréciée et remplacée par le **Pod Security Admission** qui se base sur le **Pod Security Standard** (PSS). Celui-ci repose sur un système de labels appliqués aux namespaces.  
+
+Il existe trois niveaux principaux définis par le standard : `privileged`, `baseline` et `restricted`.  
+Pour cet exercice, nous allons commencer par imposer le niveau `restricted` sur le namespace `default` :
 
 ```shell
-kubectl create namespace psp-example
-kubectl create serviceaccount -n psp-example fake-user
-kubectl create rolebinding -n psp-example fake-editor --clusterrole=edit --serviceaccount=psp-example:fake-user
+kubectl label namespace default \
+  pod-security.kubernetes.io/enforce=restricted \
+  --overwrite
 ```
 
-Enregistre des alias pour simplifier les commandes suivantes :
-```shell
-alias kubectl-admin='kubectl -n psp-example'
-alias kubectl-user='kubectl --as=system:serviceaccount:psp-example:fake-user -n psp-example'
-```
+Ce label impose des contraintes de sécurité plus strictes pour tous les Pods créés dans ce namespace.
 
-Créez la PodSecurityPolicy **avec kubectl-admin !** (`kubectl-admin create -f <psp.yaml>`).
-```yaml
-apiVersion: policy/v1beta1
-kind: PodSecurityPolicy
-metadata:
-  name: example
-spec:
-  privileged: false  # Don't allow privileged pods!
-  # The rest fills in some required fields.
-  seLinux:
-    rule: RunAsAny
-  supplementalGroups:
-    rule: RunAsAny
-  runAsUser:
-    rule: RunAsAny
-  fsGroup:
-    rule: RunAsAny
-  volumes:
-  - '*'
-```
+### Création d’un Pod simple
 
-Avec l'utilisateur non admin, créez un Pod simple :
+Tentons de créer un Pod tout simple :
+
 ```shell
 kubectl-user create -f- <<EOF
 apiVersion: v1
@@ -166,76 +155,42 @@ spec:
 EOF
 ```
 
-Quel retour obtenez vous de l'API ? Pourquoi ?
+- **Quel retour obtenez-vous de l’API ?**  
+- **Pourquoi ?**
 
-Vérifiez via la commandes `kubectl-user auth can-i use podsecuritypolicy/example`.
+Selon la configuration `restricted`, si votre Pod ne demande pas de privilèges particuliers, il devrait pouvoir être créé. Toutefois, si vous aviez tenté d’y ajouter des options non conformes (par exemple un conteneur privilégié), vous auriez vu un message d’erreur indiquant que la demande est bloquée par la politique de sécurité.
 
-Bindez un role permettant l'utilisation de la PSP à notre utilisateur non admin :
+### Création d’un Pod privilégié
+
+Pour illustrer le blocage des Pods privilégiés dans le niveau `restricted`, essayons de re-créer les Pods des questions 1 et 2.
+
+Vérifiez la réponse de l’API.  
+- Pourquoi ce Pod est-il refusé ?  
+- Qu’est-ce qui, dans la politique de `restricted`, empêche ce Pod d’être créé ?
+
+---
+
+## 4. Délégation et effets sur les contrôleurs (Deployment, etc.)
+
+Créons un déploiement qui exécute le même conteneur :
+
 ```shell
-kubectl-admin create role psp:unprivileged \
-    --verb=use \
-    --resource=podsecuritypolicy \
-    --resource-name=example
-
-kubectl-admin create rolebinding fake-user:psp:unprivileged \
-    --role=psp:unprivileged \
-    --serviceaccount=psp-example:fake-user
-
-kubectl-user auth can-i use podsecuritypolicy/example
+kubectl-user create deployment pause --image=k8s.gcr.io/pause
 ```
 
-Puis réessayez de créer un Pod :
+Patientez quelques secondes, puis vérifiez les Pods dans le namespace :
+
 ```shell
-kubectl-user create -f- <<EOF
-apiVersion: v1
-kind: Pod
-metadata:
-  name: pause
-spec:
-  containers:
-    - name: pause
-      image: k8s.gcr.io/pause
-EOF
+kubectl-user get pods
 ```
 
-Enfin, tentez de créer un Pod privilégié :
-```shell
-kubectl-user create -f- <<EOF
-apiVersion: v1
-kind: Pod
-metadata:
-  name: privileged
-spec:
-  containers:
-    - name: pause
-      image: k8s.gcr.io/pause
-      securityContext:
-        privileged: true
-EOF
-```
+- **Que constatez-vous ?**  
+- Utilisez `kubectl-user get events | head -n 2` pour comprendre ce qui se passe.
 
-Supprimez le pod pause : `kubectl-user delete pod pause`
+Si le Pod créé par le contrôleur de déploiement ne respecte pas le niveau `restricted`, il sera bloqué.
 
-## 4. Délégation de droits des PSP
+Selon le niveau de sécurité appliqué, ou s’il y a d’autres contraintes (policy de réseau, etc.), le déploiement peut voir ses Pods refusés.
 
-Tentez de créer un Deployment pour exécuter votre conteneur :
-
-`kubectl-user create deployment pause --image=k8s.gcr.io/pause`
-
-Attendez quelques secondes, puis vérifiez les pods présents `kubectl-user get pods`.
-
-Que constatez vous ? Utilisez `kubectl-user get events | head -n 2` pour comprendre ce qui se passe.
-
-Pour résoudre ce problème, nous devons autoriser le compte de service du Pod à utiliser la PSP.
-
-Vous pouvez créer un RoleBinding avec le compte de service par défaut :
-```shell
-kubectl-admin create rolebinding default:psp:unprivileged \
-    --role=psp:unprivileged \
-    --serviceaccount=psp-example:default
-```
-
-Vérifiez que vos pods sont bien créés (patientez quelques secondes que le manager puisse réessayer) :
-```shell
-kubectl-user get pods --watch
-```
+---
+> Pour plus de détails, reportez-vous à la documentation officielle :  
+> [Pod Security Admission](https://kubernetes.io/docs/concepts/security/pod-security-admission/)
