@@ -211,6 +211,9 @@ Interprétez les résultats pour identifier les vulnérabilités critiques ou é
 
 Dans cet exercice, vous allez configurer un `ImagePolicyWebhook` pour interdire l'utilisation d'images contenant un identifiant spécifique (`danger-danger`) dans les conteneurs déployés.
 
+>>> https://github.com/howto-kubernetes-info/imagepolicywebhook
+>>> TODO@ben: add kubeconfig context and current-context
+
 ## Configuration d'un AdmissionController pour l'ImagePolicyWebhook
 
 1. **Créer un fichier de configuration AdmissionConfiguration :**
