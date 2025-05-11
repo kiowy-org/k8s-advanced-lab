@@ -18,12 +18,14 @@ Nous allons utiliser le cluster réalisé au TP1
 
 Nous allons commencer par mettre à jour les composants du control plane (master) :
 
-**L'objectif et de passer en 1.31 !**
+**L'objectif et de passer en 1.33 !**
 
 Sur le noeud master :
 
 ```shell
 {
+sudo curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.33/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.33/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 sudo apt update
 sudo apt-cache madison kubeadm
 }
@@ -34,7 +36,7 @@ Déterminez la version du package à installer, puis mettez à jour kubeadm.
 ```shell
 {
 sudo apt-mark unhold kubeadm && \
-sudo apt-get update && sudo apt-get install -y kubeadm='1.31.*' && \
+sudo apt-get update && sudo apt-get install -y kubeadm='1.33.*' && \
 sudo apt-mark hold kubeadm
 }
 ```
@@ -54,7 +56,8 @@ Démarrez le processus de mise à jour mais... n'oubliez pas de retirer les pods
 ```shell
 {
 kubectl drain <master> --ignore-daemonsets
-sudo kubeadm upgrade apply v1.31.x
+# Indiquez la version choisie au format #v1.33.xx
+sudo kubeadm upgrade apply <version>
 }
 ```
 
@@ -64,7 +67,7 @@ Maintenant, il ne reste plus qu'à mettre à jour le kubelet et kubectl.
 ```shell
 {
 sudo apt-mark unhold kubelet kubectl && \
-sudo apt-get update && sudo apt-get install -y kubelet='1.31.*' kubectl='1.31.*' && \
+sudo apt-get update && sudo apt-get install -y kubelet='1.33.*' kubectl='1.33.*' && \
 sudo apt-mark hold kubelet kubectl
 }
 ```
@@ -84,12 +87,12 @@ kubectl uncordon <master>
 
 Une fois le master à jour, vous pouvez continuer le processus sur les workers.
 
-Comme pour le master, mettez à jour kubeadm vers la 1.31
+Comme pour le master, mettez à jour kubeadm vers la 1.33
 
 ```shell
 {
 sudo apt-mark unhold kubeadm && \
-sudo apt-get update && sudo apt-get install -y kubeadm='1.31.*' && \
+sudo apt-get update && sudo apt-get install -y kubeadm='1.33.*' && \
 sudo apt-mark hold kubeadm
 }
 ```
@@ -115,7 +118,7 @@ Installez ensuite la nouvelle version du kubelet et de kubectl.
 ```shell
 {
 sudo apt-mark unhold kubelet kubectl && \
-sudo apt-get update && sudo apt-get install -y kubelet='1.31.*' kubectl='1.31.*' && \
+sudo apt-get update && sudo apt-get install -y kubelet='1.33.*' kubectl='1.33.*' && \
 sudo apt-mark hold kubelet kubectl
 }
 ```
