@@ -75,11 +75,11 @@ Nous allons également installer kubeadm et kubectl afin de réaliser les comman
 {
 sudo apt-get update
 sudo apt-get install -y apt-transport-https ca-certificates curl gpg
-sudo mkdir /etc/apt/keyrings
-sudo curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo mkdir -p -m 755 /etc/apt/keyrings
+sudo curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 sudo apt-get update
-sudo apt-get install -y kubelet='1.30.6-*' kubeadm='1.30.6-*' kubectl='1.30.6-*'
+sudo apt-get install -y kubelet='1.32.*' kubeadm='1.32.*' kubectl='1.32.*'
 sudo apt-mark hold kubelet kubeadm kubectl
 }
 ```
