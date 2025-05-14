@@ -1,4 +1,4 @@
-# Installer les outils ETCD sur le cluster kubeadm
+# Installer les outils ETCD
 
 1. Rendez-vous [https://github.com/etcd-io/etcd/releases/latest](https://github.com/etcd-io/etcd/releases/latest) et suivez les instructions d'installation.
 
