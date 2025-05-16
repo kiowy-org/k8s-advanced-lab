@@ -8,7 +8,7 @@
 <p>
 
 * Espace de noms : `default`<br>
-* Documentation : [Service](https://kubernetes.io/docs/concepts/services-networking/services/),[Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/),[Ingress Controller](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/), [Gateway API](https://kubernetes.io/docs/concepts/services-networking/gateway/)
+* Documentation : [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/), [Service](https://kubernetes.io/docs/concepts/services-networking/services/), [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/), [Ingress Controller](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/)
 
 </p>
 </details>
