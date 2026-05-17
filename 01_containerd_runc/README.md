@@ -10,19 +10,19 @@ Une fois connecté sur votre machine (vous devez voir le prompt apparaitre), ex�
 
 ```bash
 wget -q --show-progress --https-only --timestamping \
-  https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.31.1/crictl-v1.31.1-linux-amd64.tar.gz \
-  https://github.com/opencontainers/runc/releases/download/v1.2.2/runc.amd64 \
-  https://github.com/containerd/containerd/releases/download/v2.0.0/containerd-2.0.0-linux-amd64.tar.gz \
-  https://github.com/containernetworking/plugins/releases/download/v1.6.0/cni-plugins-linux-amd64-v1.6.0.tgz
+  https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.36.0/crictl-v1.36.0-linux-amd64.tar.gz \
+  https://github.com/opencontainers/runc/releases/download/v1.4.2/runc.amd64 \
+  https://github.com/containerd/containerd/releases/download/v2.3.0/containerd-2.3.0-linux-amd64.tar.gz \
+  https://github.com/containernetworking/plugins/releases/download/v1.9.1/cni-plugins-linux-amd64-v1.9.1.tgz
 ```
 
 ```bash
 {
   mkdir containerd
   sudo mkdir -p /opt/cni/bin
-  tar -xvf crictl-v1.31.1-linux-amd64.tar.gz
-  tar -xvf containerd-2.0.0-linux-amd64.tar.gz -C containerd
-  sudo tar Cxzvf /opt/cni/bin cni-plugins-linux-amd64-v1.6.0.tgz
+  tar -xvf crictl-v1.36.0-linux-amd64.tar.gz
+  tar -xvf containerd-2.3.0-linux-amd64.tar.gz -C containerd
+  sudo tar Cxzvf /opt/cni/bin cni-plugins-linux-amd64-v1.9.1.tgz
   sudo mv runc.amd64 runc
   chmod +x crictl runc 
   sudo mv crictl runc /usr/local/bin/
@@ -101,27 +101,9 @@ containerd config default | sudo tee /etc/containerd/config.toml
 ```
 Enfin, il faut créer un fichier `containerd.service` afin que systemd puisse gérer notre service.
 ```shell
-cat <<EOF | sudo tee /etc/systemd/system/containerd.service
-[Unit]
-Description=containerd container runtime
-Documentation=https://containerd.io
-After=network.target
-
-[Service]
-ExecStartPre=/sbin/modprobe overlay
-ExecStart=/bin/containerd
-Restart=always
-RestartSec=5
-Delegate=yes
-KillMode=process
-OOMScoreAdjust=-999
-LimitNOFILE=1048576
-LimitNPROC=infinity
-LimitCORE=infinity
-
-[Install]
-WantedBy=multi-user.target
-EOF
+sudo curl -L \
+  https://raw.githubusercontent.com/containerd/containerd/main/containerd.service \
+  -o /usr/local/lib/systemd/system/containerd.service
 ```
 Enfin, nous pouvons démarrer le daemon containerd.
 ```shell
@@ -191,28 +173,38 @@ Que constatez vous ?
 
 ```shell
 sudo mkdir -p /etc/cni/net.d
-cat <<EOF | sudo tee /etc/cni/net.d/10-mynet.conf 
+cat <<EOF | sudo tee /etc/cni/net.d/10-containerd-net.conflist
 {
-	"cniVersion": "0.2.0",
-	"name": "mynet",
-	"type": "bridge",
-	"bridge": "cni0",
-	"isGateway": true,
-	"ipMasq": true,
-	"ipam": {
-		"type": "host-local",
-		"subnet": "10.22.0.0/16",
-		"routes": [
-			{ "dst": "0.0.0.0/0" }
-		]
-	}
-}
-EOF
-cat <<EOF | sudo tee /etc/cni/net.d/99-loopback.conf 
-{
-	"cniVersion": "0.2.0",
-	"name": "lo",
-	"type": "loopback"
+  "cniVersion": "1.0.0",
+  "name": "containerd-net",
+  "plugins": [
+    {
+      "type": "bridge",
+      "bridge": "cni0",
+      "isGateway": true,
+      "ipMasq": true,
+      "promiscMode": true,
+      "ipam": {
+        "type": "host-local",
+        "ranges": [
+          [{
+            "subnet": "10.88.0.0/16"
+          }],
+          [{
+            "subnet": "2001:4860:4860::/64"
+          }]
+        ],
+        "routes": [
+          { "dst": "0.0.0.0/0" },
+          { "dst": "::/0" }
+        ]
+      }
+    },
+    {
+      "type": "portmap",
+      "capabilities": {"portMappings": true}
+    }
+  ]
 }
 EOF
 ```
