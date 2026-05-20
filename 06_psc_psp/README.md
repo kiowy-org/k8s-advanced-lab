@@ -1,6 +1,6 @@
-# Pod SecurityContext et PodSecurityPolicy
+# Pod SecurityContext et PodSecurityStandards
 
-Dans ce TP, nous allons manipuler le securityContext des pods, et créer des PodSecurityPolicy.
+Dans ce TP, nous allons manipuler le securityContext des pods, et appliquer des PodSecurityStandards.
 
 ## 1. Security Context
 
