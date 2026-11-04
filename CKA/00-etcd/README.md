@@ -1,27 +1,28 @@
-# Exercice ETCD
+# Exercice 0 — Sauvegarde et restauration etcd
 
-> [!IMPORTANT]
-> Si `etcdctl` & `etcdutl` ne sont pas présents sur le cluster, compléter le prérequis: [Installer les outils ETCD sur le cluster kubeadm](requirements_etcd.md)
+Documentation : [Opérer etcd pour Kubernetes](https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/).
 
-<details>
-<summary><b>Référence Rapide</b></summary>
-<p>
+## Environnement
 
-* Machine : `controller-0-prenom.forma.kiowy.net`<br>
-* Documentation : [Opérer avec ETCD](https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/)
+Sur [infra-formations/cka](https://github.com/kiowy-org/infra-formations/tree/main/cka), rejoindre le bastion `student@cka-<prenom>.forma.kiowy.net`, puis le control plane `student@mk8s-master-0-<prenom>` (IP interne `10.240.2.10`). Utiliser son kubeconfig local. Ce TP concerne le cluster de laboratoire `mk8s`, à un seul membre etcd ; il ne décrit pas une restauration HA.
 
-</p>
-</details>
+Vérifier la version de l’image etcd et ses paramètres dans `/etc/kubernetes/manifests/etcd.yaml`, ainsi que le bon cluster avec `kubectl get nodes -o wide`. Vérifier `etcdctl version` et `etcdutl version`. Si nécessaire, suivre [l’installation des outils](requirements_etcd.md). L’installation du paquet `etcd-client` par l’infrastructure ne garantit pas la présence d’`etcdutl` compatible.
 
-Dans cet exercice, vous allez un backup et une restauration de ETCD.
+## Sauvegarde
 
-## Backup de ETCD
+1. Créer dans `default` une ConfigMap témoin `etcd-restore-check` contenant `message=avant-sauvegarde`.
+2. Relever l’endpoint client etcd et les chemins de la CA, du certificat client et de sa clé dans les manifests du control plane. Avec les droits nécessaires, utiliser `etcdctl snapshot save` pour écrire `/opt/backup-etcd.db`. Les options TLS sont `--cacert`, `--cert` et `--key` ; ne pas utiliser `--insecure-skip-tls-verify`.
+3. Contrôler le snapshot avec `etcdutl snapshot status /opt/backup-etcd.db --write-out=table`.
+4. Supprimer uniquement la ConfigMap témoin et vérifier son absence. Cette suppression permet de prouver ensuite la restauration effective.
 
-1. Réaliser un backup de ETCD dans un fichier `/opt/backup-etcd.db`
+## Restauration
 
-> [!TIP]
-> Les options `--cacert`, `--cert` et `--key` doivent être présente et peuvent être complété par fichier utilisé en option du Pod `etcd.yaml`.
+1. Sauvegarder les manifests du control plane dans un répertoire **hors** de `/etc/kubernetes/manifests`. Conserver le répertoire de données etcd initial pour pouvoir revenir à l’état précédent.
+2. Retirer temporairement les manifests de l’API server, du controller-manager et du scheduler du répertoire surveillé par le kubelet. Attendre leur arrêt, observable avec `sudo crictl ps`. Retirer ensuite le manifest etcd et attendre son arrêt. `kubectl` n’est plus utilisable pendant l’arrêt de l’API.
+3. Restaurer le snapshot avec `etcdutl snapshot restore` dans le nouveau répertoire `/var/lib/etcd-backup`, qui ne doit pas déjà contenir une restauration. Reprendre les paramètres de membre `--name`, `--initial-cluster` et `--initial-advertise-peer-urls` correspondant au manifest etcd du lab. Consulter la documentation de récupération de la version installée : pour Kubernetes, utiliser le mécanisme de révision majorée et de compaction lorsque pris en charge (`--bump-revision`, `--mark-compacted`) pour invalider les caches des clients.
+4. Dans la copie du manifest etcd, modifier le `hostPath.path` du volume de données pour pointer vers `/var/lib/etcd-backup`. Si le chemin monté dans le conteneur reste `/var/lib/etcd`, conserver ce `mountPath` et la valeur correspondante de `--data-dir` : chemin hôte et chemin conteneur sont distincts. Vérifier les permissions du répertoire restauré.
+5. Remettre le manifest etcd, attendre la santé de l’endpoint etcd, puis remettre les manifests de l’API server, du controller-manager et du scheduler. Observer les conteneurs et leurs logs si le démarrage échoue.
+6. Vérifier le retour de l’API, des nœuds et de la ConfigMap `etcd-restore-check` avec sa valeur `avant-sauvegarde`. Un fichier restauré sur disque sans retour de l’objet témoin ne valide pas le TP.
+7. Supprimer la ConfigMap témoin. Conserver les sauvegardes jusqu’à validation par le formateur ; ne pas supprimer le répertoire de données actuellement monté par etcd.
 
-## Restaurer de ETCD
-
-1. A partir de `/opt/backup-etcd.db`, restaurez ETCD via le **data-dir** `/var/lib/etcd-backup`
+La restauration affecte l’ensemble de ce cluster de laboratoire. Le formateur doit valider la procédure avec les versions effectivement installées avant la session.

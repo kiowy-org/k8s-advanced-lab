@@ -1,34 +1,19 @@
-# Installer les outils ETCD
+# Installer les outils etcd du laboratoire
 
-1. Rendez-vous [https://github.com/etcd-io/etcd/releases/latest](https://github.com/etcd-io/etcd/releases/latest) et suivez les instructions d'installation.
+Vérifier d’abord l’image du membre etcd dans `/etc/kubernetes/manifests/etcd.yaml` et les binaires existants :
 
-    _Exemple pour la [v3.5.14](https://github.com/etcd-io/etcd/releases/tag/v3.5.14)_
+```shell
+etcdctl version
+etcdutl version
+uname -m
+```
 
-    ```shell
-    ETCD_VER=v3.5.14
-    
-    # choose either URL
-    GOOGLE_URL=https://storage.googleapis.com/etcd
-    GITHUB_URL=https://github.com/etcd-io/etcd/releases/download
-    DOWNLOAD_URL=${GOOGLE_URL}
-    
-    rm -f /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
-    rm -rf /tmp/etcd-download-test && mkdir -p /tmp/etcd-download-test
-    
-    curl -L ${DOWNLOAD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
-    tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C /tmp/etcd-download-test --strip-components=1
-    rm -f /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
-    
-    /tmp/etcd-download-test/etcd --version
-    /tmp/etcd-download-test/etcdctl version
-    /tmp/etcd-download-test/etcdutl version
-    ```
+Choisir une release officielle compatible avec la version **majeure et mineure** du serveur etcd du lab, puis vérifier les exigences de restauration de cette release. Ne pas sélectionner automatiquement « latest ». Les téléchargements sont disponibles dans les [releases officielles etcd](https://github.com/etcd-io/etcd/releases).
 
-2. Executez les commandes suivantes pour ajouter les exécutables à la session.
-    ```shell
-    sudo mv /tmp/etcd-download-test/etcdctl /bin/etcdctl
-    sudo mv /tmp/etcd-download-test/etcdutl /bin/etcdutl
-    ```
+1. Relever la version exacte approuvée par le formateur (`vX.Y.Z`). Sélectionner l’archive Linux `amd64` pour `x86_64`, ou `arm64` pour `aarch64`. Les VM GCE e2 du lab sont amd64.
+2. Télécharger cette archive et son fichier de sommes de contrôle depuis la même release, avec `curl --fail --location --output <fichier> <URL>`. Vérifier la somme SHA-256 de l’archive avant extraction. Arrêter si le téléchargement ou le contrôle échoue.
+3. Extraire dans un répertoire temporaire dédié, puis installer les deux binaires avec `sudo install -m 0755 <repertoire-extrait>/etcdctl /usr/local/bin/etcdctl` et la même commande pour `etcdutl`. Ne pas remplacer les fichiers gérés par le système dans `/bin`.
+4. Vérifier `/usr/local/bin/etcdctl version` et `/usr/local/bin/etcdutl version`, puis `command -v etcdctl` et `command -v etcdutl`. Employer le chemin absolu si une ancienne version est prioritaire dans le PATH, notamment avec sudo.
+5. Vérifier les options disponibles avec `etcdutl snapshot restore --help` et suivre la documentation de récupération de la release choisie.
 
-> [!TIP]
-> Pas de panic lors de la CKA, ces outils seront préinstallées 😉
+Les placeholders doivent être remplacés par les valeurs de la release retenue. La présence des outils dans un environnement d’examen doit être vérifiée sur l’hôte indiqué par la tâche ; elle ne remplace pas cette préparation du laboratoire.
