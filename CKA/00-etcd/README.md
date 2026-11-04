@@ -1,12 +1,14 @@
-# Exercice 0 — Sauvegarde et restauration etcd
+# Exercice ETCD
 
-Documentation : [Opérer etcd pour Kubernetes](https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/).
+<details>
+<summary><b>Référence Rapide</b></summary>
+<p>
 
-## Environnement
+* Machine : `mk8s-master-0-<prenom> (via le bastion)`<br>
+* Documentation : [Opérer avec ETCD](https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/)
 
-Sur [infra-formations/cka](https://github.com/kiowy-org/infra-formations/tree/main/cka), rejoindre le bastion `student@cka-<prenom>.forma.kiowy.net`, puis le control plane `student@mk8s-master-0-<prenom>` (IP interne `10.240.2.10`). Utiliser son kubeconfig local. Ce TP concerne le cluster de laboratoire `mk8s`, à un seul membre etcd ; il ne décrit pas une restauration HA.
-
-Vérifier la version de l’image etcd et ses paramètres dans `/etc/kubernetes/manifests/etcd.yaml`, ainsi que le bon cluster avec `kubectl get nodes -o wide`. Vérifier `etcdctl version` et `etcdutl version`. Si nécessaire, suivre [l’installation des outils](requirements_etcd.md). L’installation du paquet `etcd-client` par l’infrastructure ne garantit pas la présence d’`etcdutl` compatible.
+</p>
+</details>
 
 ## Sauvegarde
 
