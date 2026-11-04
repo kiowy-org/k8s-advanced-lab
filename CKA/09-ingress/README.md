@@ -1,33 +1,16 @@
-# Exercice 9 — Ingress HTTPS avec Traefik
+# Exercice 9 - Ingress
 
-Documentation : [installation Traefik](https://doc.traefik.io/traefik/setup/kubernetes/), [Ingress Kubernetes](https://kubernetes.io/docs/concepts/services-networking/ingress/).
+<details>
+<summary><b>Référence Rapide</b></summary>
+<p>
 
-## Préparation par le formateur
+* Espace de noms : `tp09-ingress`<br>
+* Documentation : [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/), [Service](https://kubernetes.io/docs/concepts/services-networking/services/), [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/), [Ingress Controller](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/)
 
-L’infrastructure [infra-formations/cka](https://github.com/kiowy-org/infra-formations/tree/main/cka) fournit des workers privés et un bastion SSH, sans contrôleur Ingress ni DNS applicatif. Utiliser le cluster `k8s`, depuis son control plane `k8s-master-0-<prenom>` via le bastion `cka-<prenom>.forma.kiowy.net` et son kubeconfig local. Ne pas employer un kubeconfig fusionné dont seules les entrées de contexte ont été renommées.
+</p>
+</details>
 
-1. Installer Helm sur le control plane si nécessaire. Relever `kubectl version` et choisir une version du chart officiel Traefik compatible avec ce serveur. Le code d’infrastructure installe Kubernetes 1.29 : une mise à niveau du lab est à prévoir ; ne pas supposer qu’un chart récent est compatible. Consigner la version exacte approuvée pour la session dans `TRAEFIK_CHART_VERSION`.
-2. Ajouter le dépôt puis installer une release dédiée au TP :
-
-```shell
-helm repo add traefik https://traefik.github.io/charts
-helm repo update
-# Définir TRAEFIK_CHART_VERSION avec la version exacte validée par le formateur.
-: "${TRAEFIK_CHART_VERSION:?Version du chart validée requise}"
-helm upgrade --install tp09-traefik traefik/traefik   --version "$TRAEFIK_CHART_VERSION"   --namespace tp09-traefik --create-namespace   --set service.type=NodePort   --set ingressClass.name=tp09-traefik   --set ingressClass.isDefaultClass=false   --set providers.kubernetesIngress.enabled=true   --set providers.kubernetesIngress.ingressClass=tp09-traefik   --wait --timeout 180s
-```
-
-3. Vérifier le Deployment, le Service et `kubectl get ingressclass tp09-traefik -o yaml`. Relever le NodePort HTTPS (`websecure`) du Service de cette release. Depuis le bastion, vérifier que ce port est joignable sur `10.240.1.20`. Aucun LoadBalancer public ni ouverture de pare-feu Internet n’est requis.
-4. Créer le namespace `tp09-ingress`. Choisir les noms locaux `kuard.tp09.test` et `nginx.tp09.test`. Générer un certificat autosigné limité au laboratoire, avec les deux noms en SAN :
-
-```shell
-mkdir -p tp09-tls
-chmod 700 tp09-tls
-openssl req -x509 -nodes -newkey rsa:2048 -days 7   -keyout tp09-tls/tls.key -out tp09-tls/tls.crt   -subj '/CN=nginx.tp09.test'   -addext 'subjectAltName=DNS:nginx.tp09.test,DNS:kuard.tp09.test'
-kubectl -n tp09-ingress create secret tls my-app-tls   --key=tp09-tls/tls.key --cert=tp09-tls/tls.crt
-```
-
-Fournir aux participants le certificat public `tls.crt`, le port HTTPS et les images applicatives épinglées validées pour la session. Garder la clé privée sur la machine de préparation.
+Dans cet exercice, vous créerez un Ingress HTTPS. Le formateur fournit Traefik, la classe `tp09-traefik`, le Secret `my-app-tls`, le certificat public et le NodePort HTTPS.
 
 ## Exercice
 
