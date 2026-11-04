@@ -12,16 +12,15 @@
 
 Vous avez pour tâche de créer un Pod pour exécuter une application dans un conteneur. Pendant le développement de l'application, vous avez effectué un test de charge pour déterminer la quantité minimale de ressources nécessaire et la quantité maximale de ressources que l'application est autorisée à consommer. Définissez ces demandes et limites de ressources pour le Pod.
 
-
 1. Définissez un Pod nommé `hello-world` exécutant l'image de conteneur `bmuschko/nodejs-hello-world:1.0.0`. Le conteneur expose le port 3000.
 2. Ajoutez un Volume de type `emptyDir` et montez-le sur le chemin du conteneur `/var/log`.
-3. Pour le conteneur, spécifiez le nombre minimum de ressources comme suit :
+3. Pour le conteneur, définissez les `resources.requests` utilisées pour la planification comme suit :
 
     - CPU : 100m
     - Mémoire : 500Mi
     - Stockage éphémère : 1Gi
 
-4. Pour le conteneur, spécifiez le nombre maximum de ressources comme suit :
+4. Pour le conteneur, définissez les `resources.limits` comme suit (sans limite CPU dans cet exercice) :
 
     - Mémoire : 500Mi
     - Stockage éphémère : 2Gi
