@@ -1,16 +1,14 @@
-# Exercice 7 — Taints, tolérances et éviction
+# Exercice 7
 
-## Environnement du TP
+<details>
+<summary><b>Référence Rapide</b></summary>
+<p>
 
-Sur l’infrastructure [infra-formations/cka](https://github.com/kiowy-org/infra-formations/tree/main/cka), rejoindre le bastion `student@cka-<prenom>.forma.kiowy.net`, puis le control plane `student@k8s-master-0-<prenom>` et utiliser son kubeconfig local (`~/.kube/config`). Vérifier `kubectl get nodes -o wide` avant de commencer. Les deux workers de ce cluster sont `k8s-node-0-<prenom>` et `k8s-node-1-<prenom>`.
+* Espace de noms : `tp07-taints`<br>
+* Documentation : [Taints et Tolerations](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/)
 
-Le kubeconfig fusionné du bastion doit avoir des noms de clusters **et** d’utilisateurs distincts pour chaque contexte ; renommer seulement les contextes ne suffit pas. Tant que cette vérification n’est pas faite, utiliser l’accès direct au control plane décrit ci-dessus.
-
-Documentation : [Taints et tolérances](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/).
-
-Utiliser deux workers ordonnançables sur le cluster `k8s`. Réaliser l’exercice dans un namespace dédié `tp07-taints`. Relever les taints existantes et vérifier que la clé `exclusive` n’est pas déjà utilisée. L’ajout d’une taint affecte tous les Pods du nœud : utiliser le cluster de laboratoire, jamais un nœud de production.
-
-Une tolérance permet à un Pod de supporter une taint ; elle ne force ni son placement ni son éviction.
+</p>
+</details>
 
 ## 1. NoSchedule : placement des nouveaux Pods
 
