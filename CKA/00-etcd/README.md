@@ -20,7 +20,7 @@ Dans cet exercice, vous allez un backup et une restauration de ETCD.
 1. Réaliser un backup de ETCD dans un fichier `/opt/backup-etcd.db`
 
 > [!TIP]
-> Les options `--ca-cert`, `--cert` et `--key` doivent être présente et peuvent être complété par fichier utilisé en option du Pod `etcd.yaml`.
+> Les options `--cacert`, `--cert` et `--key` doivent être présente et peuvent être complété par fichier utilisé en option du Pod `etcd.yaml`.
 
 ## Restaurer de ETCD
 
