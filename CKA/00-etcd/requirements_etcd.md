@@ -5,7 +5,7 @@
     _Exemple pour la [v3.5.14](https://github.com/etcd-io/etcd/releases/tag/v3.5.14)_
 
     ```shell
-    ETCD_VER=v3.5.14
+    ETCD_VER=v3.7.3
     
     # choose either URL
     GOOGLE_URL=https://storage.googleapis.com/etcd
