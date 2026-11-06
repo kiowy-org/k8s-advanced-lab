@@ -16,6 +16,6 @@ Dans cet exercice, vous utiliserez le concept de taints et de tolerations. Tout 
 1. Définissez un Pod avec l'image `nginx` dans le fichier manifeste YAML `pod.yaml`.
 2. Créez le Pod et vérifiez sur quel nœud le Pod s'exécute.
 3. Ajoutez une taint au nœud. Définissez-la sur `exclusive: yes`.
-4. Modifiez l'objet Pod en direct en ajoutant la tolérance suivante : Elle devrait être égale à la paire clé-valeur de la taint et avoir l'effet `NoExecute`.
+4. Modifiez l'objet Pod en ajoutant la tolérance suivante : Elle devrait être égale à la paire clé-valeur de la taint et avoir l'effet `NoExecute`.
 5. Observez le comportement en cours d'exécution du Pod. Si votre cluster dispose de plus d'un nœud, sur lequel vous attendez-vous à ce que le Pod s'exécute-t-il ?
 6. Supprimez la taint du nœud. Vous attendez-vous à ce que le Pod continue à s'exécuter sur le nœud ?
