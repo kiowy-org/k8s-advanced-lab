@@ -14,7 +14,7 @@ Dans cet exercice, vous allez créer un Déploiement avec plusieurs replicas. Ap
 
 
 1. Créez un Déploiement nommé `nginx` avec 3 replicas. Les Pods doivent utiliser l'image `nginx:1.31.7` et le nom `nginx`. Le Déploiement utilise le label `tier=backend`. Le modèle de Pod devrait utiliser le label `app=v1`.
-2. Répertoriez le Déploiement et assurez-vous que le nombre correct de replicas est en cours d'exécution.
+2. Listez le Déploiement et assurez-vous que le nombre correct de replicas est en cours d'exécution.
 3. Mettez à jour l'image en `nginx:1.31.8`.
 4. Vérifiez que le changement a été déployé sur toutes les replicas.
 6. Mettez à l'échelle le Déploiement à 5 replicas.
