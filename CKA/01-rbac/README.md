@@ -12,7 +12,6 @@
 
 Dans cet exercice vous allez créer des ServiceAccount, Role, ClusterRole et bindings.
 
-
 ## Création du SA
 
 1. Créer un ServiceAccount nommé `johndoe` dans le namespace `default`.
@@ -22,3 +21,7 @@ Dans cet exercice vous allez créer des ServiceAccount, Role, ClusterRole et bin
 1. Donnez au ServiceAccount `johndoe` le droit de lister les Pods et les Services dans le namespace `default`.
 2. Donnez au ServiceAccount `johndoe` le droit de lister les Services dans tout le cluster.
 3. Donnez au ServiceAccount `johndoe` le droit de lister les PersistentVolumes dans tout le cluster.
+
+## Nettoyage
+
+Supprimer seulement le ServiceAccount, les Roles, ClusterRoles et bindings créés dans cet exercice. Conserver leurs noms dans vos fichiers pour ne pas toucher aux droits d’autres utilisateurs.
